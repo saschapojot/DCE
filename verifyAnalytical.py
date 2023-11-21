@@ -5,9 +5,6 @@ from scipy.integrate import quad
 import matplotlib.pyplot as plt
 from scipy.misc import derivative
 import math
-from datetime import datetime
-from multiprocessing import Pool
-
 
 #construct exact values of psi
 nH=4
@@ -56,6 +53,9 @@ print(len(delta1Vals))
 #compute function R1
 a=1
 
+#compute function R1
+a=1
+
 R1Vals=[a*(1+dVal**2)**(-1/2) for dVal in delta1Vals]
 
 #compute function B1
@@ -71,10 +71,8 @@ for n in range(0,N+1):
     tmp=a*f0/f(tn)*((1+tn/T)*(1+dValn**2))**(-1/2)
     D1Vals.append(tmp)
 
-
 #compute real part of function A1
 ReA1=[1/2*D1Tmp**2 for D1Tmp in D1Vals]
-
 
 #compute imaginary part of function A1
 
@@ -85,8 +83,9 @@ def fdot(t):
     :return: derivative of f at t
     """
 
-    val=derivative(f,t,dx=dt/200)
+    val=derivative(f,t,dx=dt/50)
     return val
+
 
 ImA1=[]
 for n in range(0,N+1):
@@ -99,26 +98,23 @@ for n in range(0,N+1):
     valTmp=-1/2*D1Tmp**2*dValn-fdotTmp/(2*fTmp)-1/(4*(T+tn))
     ImA1.append(valTmp)
 
-
 #compute function A1
 A1=[]
 for n in range(0,N+1):
     A1.append(ReA1[n]+1j*ImA1[n])
 
 
-L=5
+L=10
 
-M=1000
+M=2000
 
 dx=2*L/M
 
-xValsAll=[-L+m*dx for m in range(0,M)]
+xValsAll=[-L+m*dx for m in range(0,M+1)]
 
+PsiValsAll=np.zeros((M+1,N+1),dtype=complex)
 
-PsiValsAll=np.zeros((M,N+1),dtype=complex)
-
-
-for m in range(0,M):#m is the index for position
+for m in range(0,M+1):#m is the index for position
     for n in range(0,N+1):#n is the index for time
         D1Tmp=D1Vals[n]
         xTmp=xValsAll[m]
@@ -135,65 +131,31 @@ for n in range(0,N+1):
     PsiValsAll[:,n]/=np.linalg.norm(colTmp,ord=2)
 
 
-tExactEnd=datetime.now()
-print("construct exact solution: ",tExactEnd-tExactStart)
+LHSMat=np.zeros((M+1,N+1),dtype=complex)
+RHSMat=np.zeros((M+1,N+1),dtype=complex)
 
-P=np.zeros((M,M),dtype=complex)
-for m in range(0,M):
-    P[m,m]=-2
-    P[m,(m+1)%M]=1
-    P[m,(m-1)%M]=1
+omegaValsAll=[(1+tn/T) for tn in tValsAll]
 
-P/=-2*dx**2
-def omega(t):
-    return 1+t/T
+for m in range(1,M):
+    for j in range(1,N):
+        LHSMat[m,j]=1j*(PsiValsAll[m,j+1]-PsiValsAll[m,j-1])/(2*dt)
 
+        omgTmp=omegaValsAll[j]
 
-
-tGrids=[j for j in range(1,N)]
+        RHSMat[m,j]=-1/2*(PsiValsAll[m+1,j]-2*PsiValsAll[m,j]+PsiValsAll[m-1,j])/dx**2\
+                    +1/2*omgTmp**2*xValsAll[m]**2*PsiValsAll[m,j]
 
 
-def diffAtj(j):
-    """
+tdiff=[]
+diff=[]
+for n in range(1,N):
+    tdiff.append(n*dt)
+    tmp=np.linalg.norm(LHSMat[:,n]-RHSMat[:,n],ord=2)
+    diff.append(tmp)
 
-    :param j: time step j
-    :return: difference between LHS and RHS of Schrodinger equation
-    """
-    Vj = np.zeros((M, M), dtype=complex)
-    for m in range(0, M):
-        Vj[m, m] = xValsAll[m] ** 2
-    Vj *= 1 / 2 * omega(j * dt) ** 2
-
-    HDj = P + Vj
-
-    LHS=1j*(PsiValsAll[:,j+1]-PsiValsAll[:,j-1])/(2*dt)
-    RHS=HDj@PsiValsAll[:,j]
-
-    eps=np.linalg.norm(LHS-RHS,ord=2)
-    return [j,eps]
-
-
-
-tCompareStart=datetime.now()
-
-procNum=48
-
-pool0=Pool(procNum)
-
-retAll=pool0.map(diffAtj,tGrids)
-
-tCompareEnd=datetime.now()
-
-print("comparing time: ",tCompareEnd-tCompareStart)
-
-sortedRetAll=sorted(retAll,key=lambda item:item[0],reverse=False)
-
-# print(sortedRetAll[:10])
-
-epsAll=[item[1] for item in sortedRetAll]
 
 plt.figure()
+plt.plot(tdiff,diff)
+plt.savefig("diff.png")
+plt.close()
 
-plt.plot(tGrids,epsAll,color="black")
-
-plt.savefig("eps.png")

@@ -7,6 +7,8 @@ from scipy.misc import derivative
 import math
 from datetime import datetime
 from multiprocessing import Pool
+import copy
+# import pandas as pd
 # from multiprocessing import set_start_method
 
 # set_start_method('forkserver')
@@ -27,7 +29,7 @@ def f(t):
 
 f0=f(0)
 
-N=1000
+N=2100
 dt=T/N
 tValsAll=[dt*n for n in range(0,N+1)]
 
@@ -114,7 +116,7 @@ for n in range(0,N+1):
 
 L=10
 
-M=2000
+M=1000
 
 dx=2*L/M
 
@@ -136,7 +138,7 @@ for m in range(0,M):#m is the index for position
 #normalization for each col
 for n in range(0,N+1):
     colTmp=PsiValsAll[:,n]
-    PsiValsAll[:,n]/=np.linalg.norm(colTmp,ord=2)*np.sqrt(dx)
+    PsiValsAll[:,n]/=np.linalg.norm(colTmp,ord=2)
 
 # for n in range(0,N+1):
 #     print("0th elem: "+str(abs(PsiValsAll[0,n]))+", last elem: "+str(abs(PsiValsAll[-1,n])))
@@ -177,7 +179,7 @@ tStepsAll=[j for j in range(0,N)]
 tEigStart=datetime.now()
 
 
-procNum=48
+procNum=24
 
 pool0=Pool(procNum)
 
@@ -188,7 +190,7 @@ tEigEnd=datetime.now()
 print("eig time: ",tEigEnd-tEigStart)
 
 sortedRetAll=sorted(retAll,key=lambda item: item[0])
-
+print("j0="+str(sortedRetAll[0][0]))
 
 def oneStepEvolution(j,psij):
     """
@@ -210,7 +212,7 @@ def oneStepEvolution(j,psij):
 
 tEvoStart=datetime.now()
 psi0=PsiValsAll[:,0]
-psiNumericalAll=[psi0]
+psiNumericalAll=[copy.deepcopy(psi0)]
 for j in range(0,N):
     psiCurr=psiNumericalAll[j]
     psiNext=oneStepEvolution(j,psiCurr)
@@ -226,10 +228,24 @@ print("evolution time: ",tEvoEnd-tEvoStart)
 #         print(n)
 diff=[]
 for n in range(0,N+1):
-    diff.append(np.linalg.norm(psiNumericalAll[n]-PsiValsAll[:,n],ord=2)*np.sqrt(dx))
+    diff.append(np.linalg.norm(psiNumericalAll[n]-PsiValsAll[:,n],ord=2))
 
 plt.figure()
 plt.plot(range(0,N+1),diff)
-plt.savefig("diff.png")
+plt.savefig("diffM"+str(M)+"N"+str(N)+".png")
 
-np.savetxt("diff.txt",diff)
+np.savetxt("diffM"+str(M)+"N"+str(N)+".txt",diff)
+
+plt.figure()
+plt.plot(xValsAll,np.abs(psiNumericalAll[-1]),color="black")
+plt.savefig("waveLastM"+str(M)+"N"+str(N)+".png")
+plt.close()
+
+diffInitLast=np.linalg.norm(psiNumericalAll[0]-psiNumericalAll[-1])
+
+print("diff of init and last ="+str(diffInitLast))
+# psiLast=[psiNumericalAll[-1]]
+#
+# outDf=pd.DataFrame(data=psiLast)
+
+
