@@ -112,7 +112,7 @@ for n in range(0,N+1):
     A1.append(ReA1[n]+1j*ImA1[n])
 
 
-L=5
+L=10
 
 M=2000
 
@@ -147,7 +147,7 @@ P=np.zeros((M,M),dtype=complex)
 for m in range(0,M):
     P[m,m]=-2
     P[m,(m+1)%M]=1
-    P[(m-1)%M,m]=1
+    P[m,(m-1)%M]=1
 
 P/=-2*dx**2
 
@@ -177,7 +177,7 @@ tStepsAll=[j for j in range(0,N)]
 tEigStart=datetime.now()
 
 
-procNum=12
+procNum=48
 
 pool0=Pool(procNum)
 
