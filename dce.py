@@ -37,8 +37,8 @@ theta=np.pi/7
 Deltam=omegam-omegap
 
 tTot=0.1
-N1=50
-N2=50
+N1=500
+N2=500
 L1=5
 L2=5
 
