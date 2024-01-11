@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
 import math
-
+from scipy.sparse.linalg import spsolve
 import scipy.linalg
 from scipy.special import hermite
 from datetime import datetime
@@ -183,57 +183,47 @@ tInitEnd=datetime.now()
 print("Initialization of Psi: ",tInitEnd-tInitStart)
 
 
-def evoMat(j):
+
+# def evoMat(j):
+#     """
+#
+#     :param j: time step j
+#     :return: (1-1/2 * i*dt *H)/(1+1/2*i*dt*H)
+#     """
+#     HDRj = H0 + H1Mat(j) + H2 + H3 + H4Mat(j) + H5Mat(j) + H6 + H7 + H8
+#
+#     mat=(IN1N2-1/2*1j*dt*HDRj)@inv(IN1N2+1/2*1j*dt*HDRj)
+#
+#     return [j,mat]
+def HMat(j):
     """
 
     :param j: time step j
-    :return: (1-1/2 * i*dt *H)/(1+1/2*i*dt*H)
+    :return: HDRj
     """
     HDRj = H0 + H1Mat(j) + H2 + H3 + H4Mat(j) + H5Mat(j) + H6 + H7 + H8
-
-    mat=(IN1N2-1/2*1j*dt*HDRj)@inv(IN1N2+1/2*1j*dt*HDRj)
-
-    return [j,mat]
-
+    return [j,HDRj]
 
 
 tStepsAll=[j for j in range(0,M)]
-tInvStart=datetime.now()
-pool1=Pool(procNum)
-ret1=pool1.map(evoMat,tStepsAll)
+tHStart=datetime.now()
+pool0=Pool(procNum)
+retHAll=pool0.map(HMat,tStepsAll)
+retHAllSorted=sorted(retHAll,key=lambda item:item[0])
+tHEnd=datetime.now()
 
-tInvEnd=datetime.now()
-
-print("prod and inv time: ",tInvEnd-tInvStart)
-
-sortedRet1=sorted(ret1,key=lambda item: item[0])
-
-def oneStepEvolution(j,Psij):
-    """
-
-    :param j: current step
-    :param Psij: current wavefunction
-    :return: wavefunction at time step j+1
-    """
-
-    _,Uj=sortedRet1[j]
-    PsiNext=Uj@Psij
-
-    return PsiNext
-
-
-tEvoStart=datetime.now()
+print("Construct All H time: ",tHEnd-tHStart)
 
 PsiAll=[copy.deepcopy(Psi0)]
 for j in range(0,M):
+    if j%500==0:
+        print("step "+str(j))
     PsiCurr=PsiAll[j]
-    PsiNext=oneStepEvolution(j,PsiCurr)
+    Htmp=retHAllSorted[j][1]
+    y0=spsolve(IN1N2+1/2*1j*dt*Htmp,PsiCurr)
+    PsiNext=(IN1N2-1/2*1j*dt*Htmp)@y0
     PsiAll.append(PsiNext)
 
-
-tEvoEnd=datetime.now()
-
-print("evolution time: ",tEvoEnd-tEvoStart)
 
 outData=np.array(PsiAll).T
 dtFrm=pd.DataFrame(data=outData)
