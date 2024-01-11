@@ -214,6 +214,8 @@ tHEnd=datetime.now()
 
 print("Construct All H time: ",tHEnd-tHStart)
 
+tEvolutionStart=datetime.now()
+
 PsiAll=[copy.deepcopy(Psi0)]
 for j in range(0,M):
     if j%500==0:
@@ -231,3 +233,7 @@ outDirPrefix="./omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"e
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 
 dtFrm.to_csv(outDirPrefix+"PsiAll.csv",index=False,header=False)
+
+tEvolutionEnd=datetime.now()
+
+print("evolution time: ",tEvolutionEnd-tEvolutionStart)
