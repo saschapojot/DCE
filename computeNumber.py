@@ -5,11 +5,11 @@ from datetime import  datetime
 from scipy import sparse
 import matplotlib.pyplot as plt
 
-inFileName="./out0/"
+inFileName="./out1/"
 
 
 dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
-
+print("finished reading")
 nRow,nCol=dfstr.shape
 #nCol is total time step number
 # print(nRow)
@@ -23,10 +23,11 @@ def str2complex(ij):
     :return: convert [i,j]-th element of dfstr from str to complex
     """
     i,j=ij
-    try:
-        ret=[i,j,complex((dfstr.iloc[i,j]).replace(" ", ""))]
-    except ValueError as e:
-        print([i,j])
+    # try:
+    #     ret=[i,j,complex((dfstr.iloc[i,j]).replace(" ", ""))]
+    #     return ret
+    # except ValueError as e:
+    #     print([i,j])
 
 
     return [i,j,complex((dfstr.iloc[i,j]).replace(" ", ""))]
@@ -59,7 +60,7 @@ L2=5
 dx1=2*L1/N1
 dx2=2*L2/N2
 dtEst=0.002
-tTot=0.1
+tTot=1
 M=int(tTot/dtEst)
 dt=tTot/M
 
