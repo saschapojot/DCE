@@ -20,13 +20,15 @@ dtEst=0.002
 tTot=1
 M=int(tTot/dtEst)
 dt=tTot/M
+j1H=1
+j2H=1
 class solution:
     def __init__(self):
         self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
 tLoadStart=datetime.now()
 # dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
 inDirPrefix="./out2/"
-inPklFileName=inDirPrefix+"psiAll.pkl"
+inPklFileName=inDirPrefix+"j1"+str(j1H)+"j2"+str(j2H)+"psiAll.pkl"
 with open(inPklFileName,"rb") as fptr:
     wavefunctions=pickle.load(fptr)
 tLoadEnd=datetime.now()
@@ -189,3 +191,13 @@ def psi2Mat(psi):
 #     plt.colorbar()
 #     plt.savefig(inDirPrefix+"j="+str(j)+".png")
 #     plt.close()
+
+j2Plot=[0,-1]
+for j in j2Plot:
+    mat = np.abs(psi2Mat(wavefunctions.psiAll[j, :]))
+    plt.figure()
+    plt.imshow(mat)
+    plt.title("$t=$"+str((j%(M+1)*dt)))
+    plt.colorbar()
+    plt.savefig(inDirPrefix + "tStep" + str(j) + ".png")
+    plt.close()
