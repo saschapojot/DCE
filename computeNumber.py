@@ -43,7 +43,7 @@ def str2complexSerial(i,j):
 
 # ijAll=[[i,j] for i in range(0,nRow) for j in range(0,nCol)]
 
-# procNum=48
+procNum=48
 
 # pool0=Pool(procNum)
 
