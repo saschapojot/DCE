@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pickle
 #compute photon and phonon numbers serially
 
-inFileName="./out2/"
+inFileName="./out1/"
 omegac=100
 omegam=3
 N1=500
@@ -189,4 +189,3 @@ def psi2Mat(psi):
 #     plt.colorbar()
 #     plt.savefig(inDirPrefix+"j="+str(j)+".png")
 #     plt.close()
-
