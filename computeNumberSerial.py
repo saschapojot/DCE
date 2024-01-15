@@ -17,7 +17,7 @@ L2=5
 dx1=2*L1/N1
 dx2=2*L2/N2
 dtEst=0.002
-tTot=0.01
+tTot=1
 M=int(tTot/dtEst)
 dt=tTot/M
 class solution:
@@ -138,8 +138,10 @@ def avgNm(j):
     return [j,val]
 
 
+
 timeStepsAll=[j for j in range(0,M+1)]
 procNum=48
+
 tNcStart=datetime.now()
 
 pool1=Pool(procNum)
