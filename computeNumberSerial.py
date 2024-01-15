@@ -128,7 +128,7 @@ def avgNm(j):
 
     return [j,val]
 
-
+procNum=48
 timeStepsAll=[j for j in range(0,nCol)]
 
 tNcStart=datetime.now()
