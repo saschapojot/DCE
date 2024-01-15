@@ -5,6 +5,8 @@ from datetime import  datetime
 from scipy import sparse
 import matplotlib.pyplot as plt
 
+#compute photon and phonon numbers serially
+
 inFileName="./out1/"
 
 
@@ -32,21 +34,35 @@ def str2complex(ij):
 
     return [i,j,complex((dfstr.iloc[i,j]).replace(" ", ""))]
 
-ijAll=[[i,j] for i in range(0,nRow) for j in range(0,nCol)]
+def str2complexSerial(i,j):
+    """
 
-procNum=48
+    :param i: row
+    :param j: col
+    :return: value at [i,j]
+    """
+    return complex((dfstr.iloc[i,j]).replace(" ", ""))
 
-pool0=Pool(procNum)
-
+# ijAll=[[i,j] for i in range(0,nRow) for j in range(0,nCol)]
+#
+# procNum=48
+#
+# pool0=Pool(procNum)
+#
 t2ComplexStart=datetime.now()
+#
+# ret0=pool0.map(str2complex,ijAll)
 
-ret0=pool0.map(str2complex,ijAll)
 
 
-
-for item in ret0:
-    i,j,val=item
-    PsiAll[i,j]=val
+# for item in ret0:
+#     i,j,val=item
+#     PsiAll[i,j]=val
+for i in range(0,nRow):
+    for j in range(0,nCol):
+        PsiAll[i,j]=str2complexSerial(i,j)
+        if i%10000==0 and j%10000==0:
+            print("reading elem "+str([i,j]))
 
 t2ComplexEnd=datetime.now()
 
