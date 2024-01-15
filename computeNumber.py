@@ -32,21 +32,33 @@ def str2complex(ij):
 
     return [i,j,complex((dfstr.iloc[i,j]).replace(" ", ""))]
 
-ijAll=[[i,j] for i in range(0,nRow) for j in range(0,nCol)]
+def str2complexSerial(i,j):
+    """
 
-procNum=48
+    :param i: row
+    :param j: col
+    :return: element [i,j]
+    """
+    return complex((dfstr.iloc[i,j]).replace(" ", ""))
 
-pool0=Pool(procNum)
+# ijAll=[[i,j] for i in range(0,nRow) for j in range(0,nCol)]
+
+# procNum=48
+
+# pool0=Pool(procNum)
 
 t2ComplexStart=datetime.now()
+for i in range(0,nRow):
+    for j in range(0,nCol):
+        PsiAll[i,j]=str2complexSerial(i,j)
 
-ret0=pool0.map(str2complex,ijAll)
+# ret0=pool0.map(str2complex,ijAll)
 
 
 
-for item in ret0:
-    i,j,val=item
-    PsiAll[i,j]=val
+# for item in ret0:
+#     i,j,val=item
+#     PsiAll[i,j]=val
 
 t2ComplexEnd=datetime.now()
 
