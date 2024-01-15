@@ -5,7 +5,7 @@ from datetime import  datetime
 from scipy import sparse
 import matplotlib.pyplot as plt
 
-inFileName="./out0/"
+inFileName="./out1/"
 
 
 dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
