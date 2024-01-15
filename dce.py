@@ -1,17 +1,18 @@
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+# import pandas as pd
+# import matplotlib.pyplot as plt
 from multiprocessing import Pool
 import math
 from scipy.sparse.linalg import spsolve
-import scipy.linalg
+# import scipy.linalg
 from scipy.special import hermite
 from datetime import datetime
 import copy
 from pathlib import Path
 from scipy import sparse
 # from scipy.linalg import ishermitian
-from scipy.sparse.linalg import inv
+# from scipy.sparse.linalg import inv
+import pickle
 
 j1H=1
 j2H=1
@@ -36,7 +37,7 @@ lmd=(er-1/er)/(er+1/er)*(omegam-omegap)
 theta=np.pi/7
 Deltam=omegam-omegap
 
-tTot=0.1
+tTot=1
 N1=500
 N2=500
 L1=5
@@ -215,25 +216,36 @@ tHEnd=datetime.now()
 print("Construct All H time: ",tHEnd-tHStart)
 
 tEvolutionStart=datetime.now()
-
-PsiAll=[copy.deepcopy(Psi0)]
+class solution:
+    def __init__(self):
+        self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
+wavefunctions=solution()
+wavefunctions.psiAll[0,:]=Psi0
+# PsiAll=[copy.deepcopy(Psi0)]
 for j in range(0,M):
+
     if j%500==0:
         print("step "+str(j))
-    PsiCurr=PsiAll[j]
+    PsiCurr=wavefunctions.psiAll[j,:]
     Htmp=retHAllSorted[j][1]
     y0=spsolve(IN1N2+1/2*1j*dt*Htmp,PsiCurr)
     PsiNext=(IN1N2-1/2*1j*dt*Htmp)@y0
-    PsiAll.append(PsiNext)
+    # PsiAll.append(PsiNext)
+    wavefunctions.psiAll[j+1,:]=PsiNext
 
 
-outData=np.array(PsiAll).T
-dtFrm=pd.DataFrame(data=outData)
-outDirPrefix="./omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)+"theta"+str(theta/np.pi)+"pi"+"/"
+# outData=np.array(PsiAll).T
+# dtFrm=pd.DataFrame(data=outData)
+# outDirPrefix="./omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)+"theta"+str(theta/np.pi)+"pi"+"/"
+outDirPrefix="./out2/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 
-dtFrm.to_csv(outDirPrefix+"PsiAll.csv",index=False,header=False)
+# dtFrm.to_csv(outDirPrefix+"PsiAll.csv",index=False,header=False)
 
 tEvolutionEnd=datetime.now()
 
 print("evolution time: ",tEvolutionEnd-tEvolutionStart)
+
+outPklFileName=outDirPrefix+"j1"+str(j1H)+"j2"+str(j2H)+"psiAll.pkl"
+with open(outPklFileName,"wb") as fptr:
+    pickle.dump(wavefunctions,fptr,pickle.HIGHEST_PROTOCOL)
