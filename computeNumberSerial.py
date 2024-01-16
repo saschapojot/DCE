@@ -1,34 +1,48 @@
 import numpy as np
-# import pandas as pd
+import pandas as pd
 from multiprocessing import Pool
 from datetime import  datetime
 from scipy import sparse
 import matplotlib.pyplot as plt
 import pickle
 #compute photon and phonon numbers serially
+rowNum=2
+group=0
 
-inFileName="./out1/"
-omegac=100
-omegam=3
 N1=500
 N2=500
+inParamFileName="inParams"+str(group)+".csv"
+
+dfstr=pd.read_csv(inParamFileName)
+oneRow=dfstr.iloc[rowNum,:]
+
+
+j1H=int(oneRow.loc["j1H"])
+j2H=int(oneRow.loc["j2H"])
+g0=oneRow.loc["g0"]
+omegac=oneRow.loc["omegac"]
+omegam=oneRow.loc["omegam"]
+omegap=oneRow.loc["omegap"]
+er=oneRow.loc["er"]
+thetaCoef=oneRow.loc["thetaCoef"]
 L1=5
-L2=5
+L2=10
 dx1=2*L1/N1
 dx2=2*L2/N2
 dtEst=0.002
 tTot=1
 M=int(tTot/dtEst)
 dt=tTot/M
-j1H=1
-j2H=1
+
 class solution:
     def __init__(self):
         self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
 tLoadStart=datetime.now()
 # dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
-inDirPrefix="./out2/"
-inPklFileName=inDirPrefix+"j1"+str(j1H)+"j2"+str(j2H)+"psiAll.pkl"
+inDirPrefix="group0/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
+    +"thetaCoef"+str(thetaCoef)
+inPklFileName=inDirPrefix+"psiAll.pkl"
 with open(inPklFileName,"rb") as fptr:
     wavefunctions=pickle.load(fptr)
 tLoadEnd=datetime.now()
@@ -164,13 +178,14 @@ print("Nm time: ",tNmEnd-tNmStart)
 
 NcVals=[np.abs(item[1]) for item in retNcSorted]
 NmVals=[np.abs(item[1]) for item in retNmSorted]
+print(retNcSorted)
 
 plt.figure()
 
 plt.plot(timeStepsAll,NcVals,color="blue",label="photon")
 plt.plot(timeStepsAll,NmVals,color="red",label="phonon")
 plt.legend(loc="upper left")
-plt.savefig(inFileName+"n.png")
+plt.savefig(inDirPrefix+"number.png")
 
 def psi2Mat(psi):
     """
