@@ -1,5 +1,5 @@
 import numpy as np
-# import pandas as pd
+import pandas as pd
 # import matplotlib.pyplot as plt
 from multiprocessing import Pool
 import math
@@ -14,8 +14,16 @@ from scipy import sparse
 # from scipy.sparse.linalg import inv
 import pickle
 
-j1H=50
-j2H=0
+rowNum=0
+group=0
+inParamFileName="inParams"+str(group)+".csv"
+
+dfstr=pd.read_csv(inParamFileName)
+oneRow=dfstr.iloc[rowNum,:]
+
+
+j1H=int(oneRow.loc["j1H"])
+j2H=int(oneRow.loc["j2H"])
 
 def H(n,x):
     """
@@ -27,14 +35,14 @@ def H(n,x):
     return hermite(n)(x)
 
 
-g0=1
+g0=oneRow.loc["g0"]
 
-omegac=100
-omegam=3
-omegap=2.95
-er=50
+omegac=oneRow.loc["omegac"]
+omegam=oneRow.loc["omegam"]
+omegap=oneRow.loc["omegap"]
+er=oneRow.loc["er"]
 lmd=(er**2-1/er**2)/(er**2+1/er**2)*(omegam-omegap)
-thetaCoef=0.2
+thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
@@ -238,8 +246,7 @@ for j in range(0,M):
 # outData=np.array(PsiAll).T
 # dtFrm=pd.DataFrame(data=outData)
 # outDirPrefix="./omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)+"theta"+str(theta/np.pi)+"pi"+"/"
-outDirPrefix="j1H"+str(j1H)+"j2H"+str(j2H)+"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)\
-    +"omegap"+str(omegap)+"er"+str(er)+"theta"+str(thetaCoef)+"pi/"
+outDirPrefix= "group"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 
 # dtFrm.to_csv(outDirPrefix+"PsiAll.csv",index=False,header=False)
@@ -248,6 +255,8 @@ tEvolutionEnd=datetime.now()
 
 print("evolution time: ",tEvolutionEnd-tEvolutionStart)
 
-outPklFileName=outDirPrefix+"psiAll.pkl"
+outPklFileName=outDirPrefix+"row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
+    +"thetaCoef"+str(thetaCoef)+"psiAll.pkl"
 with open(outPklFileName,"wb") as fptr:
     pickle.dump(wavefunctions,fptr,pickle.HIGHEST_PROTOCOL)
