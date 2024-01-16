@@ -14,8 +14,8 @@ from scipy import sparse
 # from scipy.sparse.linalg import inv
 import pickle
 
-j1H=1
-j2H=1
+j1H=50
+j2H=0
 
 def H(n,x):
     """
@@ -33,15 +33,16 @@ omegac=100
 omegam=3
 omegap=2.95
 er=50
-lmd=(er-1/er)/(er+1/er)*(omegam-omegap)
-theta=np.pi/7
+lmd=(er**2-1/er**2)/(er**2+1/er**2)*(omegam-omegap)
+thetaCoef=0.2
+theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
 tTot=1
 N1=500
 N2=500
 L1=5
-L2=5
+L2=10
 
 dx1=2*L1/N1
 dx2=2*L2/N2
@@ -237,7 +238,8 @@ for j in range(0,M):
 # outData=np.array(PsiAll).T
 # dtFrm=pd.DataFrame(data=outData)
 # outDirPrefix="./omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)+"theta"+str(theta/np.pi)+"pi"+"/"
-outDirPrefix="./out2/"
+outDirPrefix="j1H"+str(j1H)+"j2H"+str(j2H)+"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)\
+    +"omegap"+str(omegap)+"er"+str(er)+"theta"+str(thetaCoef)+"pi/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 
 # dtFrm.to_csv(outDirPrefix+"PsiAll.csv",index=False,header=False)
@@ -246,6 +248,6 @@ tEvolutionEnd=datetime.now()
 
 print("evolution time: ",tEvolutionEnd-tEvolutionStart)
 
-outPklFileName=outDirPrefix+"j1"+str(j1H)+"j2"+str(j2H)+"psiAll.pkl"
+outPklFileName=outDirPrefix+"psiAll.pkl"
 with open(outPklFileName,"wb") as fptr:
     pickle.dump(wavefunctions,fptr,pickle.HIGHEST_PROTOCOL)
