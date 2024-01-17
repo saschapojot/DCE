@@ -197,7 +197,7 @@ plt.legend(loc="upper left")
 outNumFilePrefix="group"+str(group)+"/num/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
-Path(outNumFilePrefix).mkdir(parents=True, exist_ok=True)
+Path("group"+str(group)+"/num").mkdir(parents=True, exist_ok=True)
 plt.savefig(outNumFilePrefix+"number.png")
 
 def psi2Mat(psi):
@@ -223,7 +223,7 @@ def psi2Mat(psi):
 outWvPrefix="group"+str(group)+"/wv/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
-Path(outWvPrefix).mkdir(parents=True, exist_ok=True)
+Path("group"+str(group)+"/wv").mkdir(parents=True, exist_ok=True)
 j2Plot=[0,-1]
 for j in j2Plot:
     mat = np.abs(psi2Mat(wavefunctions.psiAll[j, :]))
