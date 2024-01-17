@@ -261,3 +261,8 @@ outPklFileName=outDirPrefix+"row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"thetaCoef"+str(thetaCoef)+"psiAll.pkl"
 with open(outPklFileName,"wb") as fptr:
     pickle.dump(wavefunctions,fptr,pickle.HIGHEST_PROTOCOL)
+
+##############memory usage
+import os, psutil
+process = psutil.Process()
+print(str((process.memory_info().rss)/1024**3)+"GB")
