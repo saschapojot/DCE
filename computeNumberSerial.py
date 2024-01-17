@@ -8,8 +8,8 @@ import pickle
 from pathlib import Path
 
 #compute photon and phonon numbers serially
-rowNum=0
-group=1
+rowNum=2
+group=4
 
 N1=500
 N2=500
@@ -194,11 +194,30 @@ plt.xlabel("time")
 plt.ylabel("number")
 plt.legend(loc="upper left")
 
-outNumFilePrefix="group"+str(group)+"/num/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+outNumFilePrefix="group"+str(group)+"/num/both/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
-Path("group"+str(group)+"/num").mkdir(parents=True, exist_ok=True)
+Path("group"+str(group)+"/num/both").mkdir(parents=True, exist_ok=True)
 plt.savefig(outNumFilePrefix+"number.png")
+plt.close()
+
+plt.figure()
+
+plt.plot(timeStepsAll*dt,NcVals,color="blue",label="photon")
+xTicks=[0,1/4*tTot,2/4*tTot,3/4*tTot,tTot]
+xTicks=[round(val,2) for val in xTicks]
+plt.xticks(xTicks)
+plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H))
+plt.xlabel("time")
+plt.ylabel("photon number")
+plt.legend(loc="upper left")
+outNumFilePrefix1="group"+str(group)+"/num/photon/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
+    +"thetaCoef"+str(thetaCoef)
+Path("group"+str(group)+"/num/photon").mkdir(parents=True, exist_ok=True)
+plt.savefig(outNumFilePrefix1+"photon.png")
+plt.close()
+
 
 def psi2Mat(psi):
     """
