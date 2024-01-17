@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pickle
 #compute photon and phonon numbers serially
 rowNum=2
-group=0
+group=1
 
 N1=500
 N2=500
@@ -39,7 +39,7 @@ class solution:
         self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
 tLoadStart=datetime.now()
 # dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
-inDirPrefix="group0/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+inDirPrefix="group"+str(group)+"/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
 inPklFileName=inDirPrefix+"psiAll.pkl"

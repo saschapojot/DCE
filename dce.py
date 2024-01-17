@@ -13,6 +13,7 @@ from scipy import sparse
 # from scipy.linalg import ishermitian
 # from scipy.sparse.linalg import inv
 import pickle
+from mpmath import fac
 
 rowNum=0
 group=0
@@ -32,7 +33,7 @@ def H(n,x):
     :param x:
     :return: value of polynomial at x
     """
-    return hermite(n)(x)
+    return hermite(n)(x)/np.sqrt(fac(n))
 
 
 g0=oneRow.loc["g0"]
