@@ -5,9 +5,11 @@ from datetime import  datetime
 from scipy import sparse
 import matplotlib.pyplot as plt
 import pickle
+from pathlib import Path
+
 #compute photon and phonon numbers serially
-rowNum=2
-group=0
+rowNum=0
+group=1
 
 N1=500
 N2=500
@@ -39,7 +41,7 @@ class solution:
         self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
 tLoadStart=datetime.now()
 # dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
-inDirPrefix="group0/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+inDirPrefix="group"+str(group)+"/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
 inPklFileName=inDirPrefix+"psiAll.pkl"
@@ -155,7 +157,7 @@ def avgNm(j):
 
 
 
-timeStepsAll=[j for j in range(0,M+1)]
+timeStepsAll=np.array([j for j in range(0,M+1)])
 procNum=48
 
 tNcStart=datetime.now()
@@ -182,10 +184,21 @@ print(retNcSorted)
 
 plt.figure()
 
-plt.plot(timeStepsAll,NcVals,color="blue",label="photon")
-plt.plot(timeStepsAll,NmVals,color="red",label="phonon")
+plt.plot(timeStepsAll*dt,NcVals,color="blue",label="photon")
+plt.plot(timeStepsAll*dt,NmVals,color="red",label="phonon")
+xTicks=[0,1/4*tTot,2/4*tTot,3/4*tTot,tTot]
+xTicks=[round(val,2) for val in xTicks]
+plt.xticks(xTicks)
+plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H))
+plt.xlabel("time")
+plt.ylabel("number")
 plt.legend(loc="upper left")
-plt.savefig(inDirPrefix+"number.png")
+
+outNumFilePrefix="group"+str(group)+"/num/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
+    +"thetaCoef"+str(thetaCoef)
+Path(outNumFilePrefix).mkdir(parents=True, exist_ok=True)
+plt.savefig(outNumFilePrefix+"number.png")
 
 def psi2Mat(psi):
     """
@@ -207,6 +220,10 @@ def psi2Mat(psi):
 #     plt.savefig(inDirPrefix+"j="+str(j)+".png")
 #     plt.close()
 
+outWvPrefix="group"+str(group)+"/wv/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
+    +"thetaCoef"+str(thetaCoef)
+Path(outWvPrefix).mkdir(parents=True, exist_ok=True)
 j2Plot=[0,-1]
 for j in j2Plot:
     mat = np.abs(psi2Mat(wavefunctions.psiAll[j, :]))
@@ -214,5 +231,5 @@ for j in j2Plot:
     plt.imshow(mat)
     plt.title("$t=$"+str((j%(M+1)*dt)))
     plt.colorbar()
-    plt.savefig(inDirPrefix + "tStep" + str(j) + ".png")
+    plt.savefig(outWvPrefix + "tStep" + str(j) + ".png")
     plt.close()
