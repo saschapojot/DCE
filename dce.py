@@ -47,7 +47,7 @@ thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
-tTot=1
+tTot=10
 N1=500
 N2=500
 L1=5
