@@ -60,7 +60,7 @@ theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
 prevtStart=0
-prevtStop=0.004
+prevtStop=5
 prevPart=0
 outDirPrefix= "group"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
@@ -83,7 +83,7 @@ currtStart=wvPrev.tStop
 
 dt=wvPrev.dt
 
-currtTotLength=3*dt
+currtTotLength=5
 currtStop=currtStart+currtTotLength
 
 M=int(currtTotLength/dt)
