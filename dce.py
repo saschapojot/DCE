@@ -47,7 +47,7 @@ theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
 tStart=0
-tStop=0.01
+tStop=5
 tTot=(tStop-tStart)
 N1=500
 N2=500

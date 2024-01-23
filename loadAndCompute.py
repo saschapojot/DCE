@@ -59,9 +59,9 @@ thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
-prevtStart=0
-prevtStop=0.004
-prevPart=0
+prevtStart=5
+prevtStop=10
+prevPart=1
 outDirPrefix= "group"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)+"psiAllpart"+str(prevPart)+".pkl"
@@ -83,7 +83,7 @@ currtStart=wvPrev.tStop
 
 dt=wvPrev.dt
 
-currtTotLength=3*dt
+currtTotLength=5
 currtStop=currtStart+currtTotLength
 
 M=int(currtTotLength/dt)
@@ -211,7 +211,7 @@ wvCurr.tStop=currtStop
 wvCurr.part=wvPrev.part+1
 wvCurr.rowNum=rowNum
 wvCurr.group=group
-
+wvCurr.dt=dt
 wvCurr.psiAll[0,:]=wvPrev.psiAll[-1,:]
 tEvolutionStart=datetime.now()
 for j in range(0,M):
