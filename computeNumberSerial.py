@@ -8,9 +8,9 @@ import pickle
 from pathlib import Path
 
 #compute photon and phonon numbers serially
-rowNum=2
+rowNum=0
 
-group=1
+group=5
 
 
 N1=500
@@ -34,7 +34,7 @@ L2=10
 dx1=2*L1/N1
 dx2=2*L2/N2
 dtEst=0.002
-tTot=1
+tTot=5
 M=int(tTot/dtEst)
 dt=tTot/M
 
