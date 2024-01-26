@@ -59,9 +59,13 @@ thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
-prevtStart=15
-prevtStop=20
-prevPart=3
+
+
+prevtStart=5
+prevtStop=10
+prevPart=1
+
+
 outDirPrefix= "group"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)+"psiAllpart"+str(prevPart)+".pkl"
