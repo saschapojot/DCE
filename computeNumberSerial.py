@@ -9,7 +9,7 @@ from pathlib import Path
 
 #compute photon and phonon numbers serially
 rowNum=2
-group=4
+group=1
 
 N1=500
 N2=500
