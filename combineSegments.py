@@ -190,6 +190,9 @@ for i in range(1,len(NmList)):
 path0="./group"+str(group)+"/num/both/"
 path1="./group"+str(group)+"/num/photon/"
 path2="./group"+str(group)+"/wv/"
+Path(path0).mkdir(parents=True, exist_ok=True)
+Path(path1).mkdir(parents=True, exist_ok=True)
+Path(path2).mkdir(parents=True, exist_ok=True)
 
 print(NmCombined)
 #plt phonon and photon
