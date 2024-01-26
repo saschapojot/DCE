@@ -178,9 +178,10 @@ for i in range(1,len(NcList)):
     tmpList=NcList[i]
     NcCombined+=tmpList[1:]
 print("len(NcCombined)="+str(len(NcCombined)))
+
 NmCombined=[]
 NmCombined+=NmList[0]
-for i in range(0,len(NmList)):
+for i in range(1,len(NmList)):
     tmpList=NmList[i]
     NmCombined+=tmpList[1:]
 print("len(NmCombined)="+str(len(NmCombined)))
@@ -189,7 +190,7 @@ path0="./group"+str(group)+"/num/both/"
 path1="./group"+str(group)+"/num/photon/"
 path2="./group"+str(group)+"/wv/"
 
-
+print(NmCombined)
 #plt phonon and photon
 tValsAll=[dt*j for j in range(0,len(NcCombined))]
 print("len(NmCombined+)="+str(len(tValsAll)))
