@@ -143,7 +143,7 @@ for i in range(0,len(pklFileNames)):
     if i==0:
         psiFirstLast.append(wvTmp.psiAll[0,:])
     if i==len(pklFileNames)-1:
-        psiFirstLast.append(wvTmp.psiAll[-1:])
+        psiFirstLast.append(wvTmp.psiAll[-1,:])
     M=len(wvTmp.psiAll)-1
     dt=wvTmp.dt
     timeStepsAll = np.array([j for j in range(0, M + 1)])
@@ -232,6 +232,7 @@ def psi2Mat(psi):
     :param psi: wavefunction at one time step
     :return: 2d representation of psi
     """
+    psi=list(psi)
     mat=np.zeros((N1,N2),dtype=complex)
     for n1 in range(0,N1):
         for n2 in range(0,N2):
@@ -239,6 +240,7 @@ def psi2Mat(psi):
     return mat
 
 indPlot=[0,-1]
+# print(psiFirstLast[0])
 for j in indPlot:
     mat=np.abs(psi2Mat(psiFirstLast[j]))
     plt.figure()
