@@ -133,6 +133,7 @@ NmList=[]
 procNum=48
 psiFirstLast=[]#initial and final value of wavefunction
 for i in range(0,len(pklFileNames)):
+    print("load file "+str(i))
     onePklFile=pklFileNames[i]
     tLoadStart=datetime.now()
     with open(onePklFile,"rb") as fptr:
@@ -167,24 +168,24 @@ for i in range(0,len(pklFileNames)):
     print("Nm time: ",tNmEnd-tNmStart)
 
 #combine values
-for item in NcList:
-    print("Nc segment length="+str(len(item)))
-for item in NmList:
-    print("Nm segment length="+str(len(item)))
+# for item in NcList:
+#     print("Nc segment length="+str(len(item)))
+# for item in NmList:
+#     print("Nm segment length="+str(len(item)))
 NcCombined=[]
 
 NcCombined+=NcList[0]
 for i in range(1,len(NcList)):
     tmpList=NcList[i]
     NcCombined+=tmpList[1:]
-print("len(NcCombined)="+str(len(NcCombined)))
+# print("len(NcCombined)="+str(len(NcCombined)))
 
 NmCombined=[]
 NmCombined+=NmList[0]
 for i in range(1,len(NmList)):
     tmpList=NmList[i]
     NmCombined+=tmpList[1:]
-print("len(NmCombined)="+str(len(NmCombined)))
+# print("len(NmCombined)="+str(len(NmCombined)))
 #outdir
 path0="./group"+str(group)+"/num/both/"
 path1="./group"+str(group)+"/num/photon/"
@@ -193,7 +194,7 @@ path2="./group"+str(group)+"/wv/"
 print(NmCombined)
 #plt phonon and photon
 tValsAll=[dt*j for j in range(0,len(NcCombined))]
-print("len(NmCombined+)="+str(len(tValsAll)))
+# print("len(NmCombined+)="+str(len(tValsAll)))
 plt.plot(tValsAll,NcCombined,color="blue",label="photon")
 plt.plot(tValsAll,NmCombined,color="red",label="phonon")
 tTot=max(tValsAll)
