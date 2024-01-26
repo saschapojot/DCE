@@ -194,7 +194,7 @@ Path(path0).mkdir(parents=True, exist_ok=True)
 Path(path1).mkdir(parents=True, exist_ok=True)
 Path(path2).mkdir(parents=True, exist_ok=True)
 
-print(NmCombined)
+# print(NmCombined)
 #plt phonon and photon
 tValsAll=[dt*j for j in range(0,len(NcCombined))]
 # print("len(NmCombined+)="+str(len(tValsAll)))
@@ -240,7 +240,7 @@ def psi2Mat(psi):
 
 indPlot=[0,-1]
 for j in indPlot:
-    mat=np.abs(psiFirstLast[j])
+    mat=np.abs(psi2Mat(psiFirstLast[j]))
     plt.figure()
     plt.imshow(mat)
     plt.title("$t=$" + str(tValsAll[j]))
