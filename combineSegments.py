@@ -133,6 +133,7 @@ NmList=[]
 procNum=48
 psiFirstLast=[]#initial and final value of wavefunction
 for i in range(0,len(pklFileNames)):
+    print("load file "+str(i))
     onePklFile=pklFileNames[i]
     tLoadStart=datetime.now()
     with open(onePklFile,"rb") as fptr:
@@ -142,7 +143,7 @@ for i in range(0,len(pklFileNames)):
     if i==0:
         psiFirstLast.append(wvTmp.psiAll[0,:])
     if i==len(pklFileNames)-1:
-        psiFirstLast.append(wvTmp.psiAll[-1:])
+        psiFirstLast.append(wvTmp.psiAll[-1,:])
     M=len(wvTmp.psiAll)-1
     dt=wvTmp.dt
     timeStepsAll = np.array([j for j in range(0, M + 1)])
@@ -167,32 +168,36 @@ for i in range(0,len(pklFileNames)):
     print("Nm time: ",tNmEnd-tNmStart)
 
 #combine values
-for item in NcList:
-    print("Nc segment length="+str(len(item)))
-for item in NmList:
-    print("Nm segment length="+str(len(item)))
+# for item in NcList:
+#     print("Nc segment length="+str(len(item)))
+# for item in NmList:
+#     print("Nm segment length="+str(len(item)))
 NcCombined=[]
 
 NcCombined+=NcList[0]
 for i in range(1,len(NcList)):
     tmpList=NcList[i]
     NcCombined+=tmpList[1:]
-print("len(NcCombined)="+str(len(NcCombined)))
+# print("len(NcCombined)="+str(len(NcCombined)))
+
 NmCombined=[]
 NmCombined+=NmList[0]
-for i in range(0,len(NmList)):
+for i in range(1,len(NmList)):
     tmpList=NmList[i]
     NmCombined+=tmpList[1:]
-print("len(NmCombined)="+str(len(NmCombined)))
+# print("len(NmCombined)="+str(len(NmCombined)))
 #outdir
 path0="./group"+str(group)+"/num/both/"
 path1="./group"+str(group)+"/num/photon/"
 path2="./group"+str(group)+"/wv/"
+Path(path0).mkdir(parents=True, exist_ok=True)
+Path(path1).mkdir(parents=True, exist_ok=True)
+Path(path2).mkdir(parents=True, exist_ok=True)
 
-
+# print(NmCombined)
 #plt phonon and photon
 tValsAll=[dt*j for j in range(0,len(NcCombined))]
-print("len(NmCombined+)="+str(len(tValsAll)))
+# print("len(NmCombined+)="+str(len(tValsAll)))
 plt.plot(tValsAll,NcCombined,color="blue",label="photon")
 plt.plot(tValsAll,NmCombined,color="red",label="phonon")
 tTot=max(tValsAll)
@@ -227,6 +232,7 @@ def psi2Mat(psi):
     :param psi: wavefunction at one time step
     :return: 2d representation of psi
     """
+    psi=list(psi)
     mat=np.zeros((N1,N2),dtype=complex)
     for n1 in range(0,N1):
         for n2 in range(0,N2):
@@ -234,8 +240,9 @@ def psi2Mat(psi):
     return mat
 
 indPlot=[0,-1]
+# print(psiFirstLast[0])
 for j in indPlot:
-    mat=np.abs(psiFirstLast[j])
+    mat=np.abs(psi2Mat(psiFirstLast[j]))
     plt.figure()
     plt.imshow(mat)
     plt.title("$t=$" + str(tValsAll[j]))
