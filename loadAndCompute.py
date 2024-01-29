@@ -60,10 +60,9 @@ theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
 
-prevtStart=5
-prevtStop=10
-prevPart=1
-
+prevtStart=45
+prevtStop=50
+prevPart=9
 outDirPrefix= "group"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)+"psiAllpart"+str(prevPart)+".pkl"
