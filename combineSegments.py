@@ -109,7 +109,7 @@ def avgNm(j):
 ####load data
 pklFileNames = []
 startVals = []
-for file in glob.glob("./group" + str(group) + "/*.pkl"):
+for file in glob.glob("./groupNew" + str(group) + "/*.pkl"):
     pklFileNames.append(file)
     matchStart=re.search(r"start(-?\d+(\.\d+)?)stop",file)
     if matchStart:
@@ -134,6 +134,7 @@ NcList=[]
 NmList=[]
 procNum=48
 psiFirstLast=[]#initial and final value of wavefunction
+print(pklFileNames)
 for i in range(0,len(pklFileNames)):
     print("load file "+str(i))
     onePklFile=pklFileNames[i]
