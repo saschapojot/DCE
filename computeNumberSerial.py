@@ -11,12 +11,12 @@ from pathlib import Path
 
 rowNum=0
 
-group=5
+group=1
 
 
 N1=500
 N2=500
-inParamFileName="inParams"+str(group)+".csv"
+inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
 oneRow=dfstr.iloc[rowNum,:]
@@ -25,10 +25,11 @@ oneRow=dfstr.iloc[rowNum,:]
 j1H=int(oneRow.loc["j1H"])
 j2H=int(oneRow.loc["j2H"])
 g0=oneRow.loc["g0"]
-omegac=oneRow.loc["omegac"]
+
 omegam=oneRow.loc["omegam"]
 omegap=oneRow.loc["omegap"]
 er=oneRow.loc["er"]
+omegac=g0*er
 thetaCoef=oneRow.loc["thetaCoef"]
 L1=5
 L2=10
@@ -197,10 +198,10 @@ plt.xlabel("time")
 plt.ylabel("number")
 plt.legend(loc="upper left")
 
-outNumFilePrefix="group"+str(group)+"/num/both/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+outNumFilePrefix="groupNew"+str(group)+"/num/both/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
-Path("group"+str(group)+"/num/both").mkdir(parents=True, exist_ok=True)
+Path("groupNew"+str(group)+"/num/both").mkdir(parents=True, exist_ok=True)
 plt.savefig(outNumFilePrefix+"number.png")
 plt.close()
 
@@ -214,10 +215,10 @@ plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H))
 plt.xlabel("time")
 plt.ylabel("photon number")
 plt.legend(loc="upper left")
-outNumFilePrefix1="group"+str(group)+"/num/photon/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+outNumFilePrefix1="groupNew"+str(group)+"/num/photon/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
-Path("group"+str(group)+"/num/photon").mkdir(parents=True, exist_ok=True)
+Path("groupNew"+str(group)+"/num/photon").mkdir(parents=True, exist_ok=True)
 plt.savefig(outNumFilePrefix1+"photon.png")
 plt.close()
 
@@ -242,10 +243,10 @@ def psi2Mat(psi):
 #     plt.savefig(inDirPrefix+"j="+str(j)+".png")
 #     plt.close()
 
-outWvPrefix="group"+str(group)+"/wv/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+outWvPrefix="groupNew"+str(group)+"/wv/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
     +"thetaCoef"+str(thetaCoef)
-Path("group"+str(group)+"/wv").mkdir(parents=True, exist_ok=True)
+Path("groupNew"+str(group)+"/wv").mkdir(parents=True, exist_ok=True)
 j2Plot=[0,-1]
 for j in j2Plot:
     mat = np.abs(psi2Mat(wavefunctions.psiAll[j, :]))
