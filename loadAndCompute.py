@@ -17,8 +17,8 @@ import pickle
 #this script loads from  a previous computation, and continues to solve the time-dependent
 #Schrodinger equation
 rowNum=0
-group=5
-inParamFileName="inParams"+str(group)+".csv"
+group=0
+inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
 oneRow=dfstr.iloc[rowNum,:]
@@ -61,9 +61,9 @@ Deltam=omegam-omegap
 
 
 
-prevtStart=5
-prevtStop=10
-prevPart=1
+prevtStart=50
+prevtStop=55
+prevPart=10
 
 
 outDirPrefix= "group"+str(group)+"/"
