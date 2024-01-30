@@ -21,8 +21,8 @@ class solution:
         self.group=0
 
 rowNum=0
-group=5
-inParamFileName="inParams"+str(group)+".csv"
+group=0
+inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
 oneRow=dfstr.iloc[rowNum,:]
@@ -32,10 +32,12 @@ j1H=int(oneRow.loc["j1H"])
 j2H=int(oneRow.loc["j2H"])
 g0=oneRow.loc["g0"]
 
-omegac=oneRow.loc["omegac"]
+# omegac=oneRow.loc["omegac"]
 omegam=oneRow.loc["omegam"]
 omegap=oneRow.loc["omegap"]
+
 er=oneRow.loc["er"]
+omegac=g0*er
 lmd=(er**2-1/er**2)/(er**2+1/er**2)*(omegam-omegap)
 thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
