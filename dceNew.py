@@ -13,9 +13,9 @@ from scipy import sparse
 # from scipy.linalg import ishermitian
 # from scipy.sparse.linalg import inv
 import pickle
+from mpmath import fac
+#this script uses inParamsNewxxx.csv
 
-#this script loads from  a previous computation, and continues to solve the time-dependent
-#Schrodinger equation
 rowNum=0
 group=0
 inParamFileName="inParamsNew"+str(group)+".csv"
@@ -27,17 +27,6 @@ oneRow=dfstr.iloc[rowNum,:]
 j1H=int(oneRow.loc["j1H"])
 j2H=int(oneRow.loc["j2H"])
 
-class solution:
-    def __init__(self):
-        self.psiAll=np.zeros((1,1),dtype=complex)
-        self.tStart=0
-        self.tStop=0
-        self.dt=0
-        self.part=0
-        self.rowNum=0
-        self.group=0
-
-
 def H(n,x):
     """
 
@@ -45,38 +34,28 @@ def H(n,x):
     :param x:
     :return: value of polynomial at x
     """
-    return hermite(n)(x)
+    return hermite(n)(x)/np.sqrt(fac(n))
 
 
 g0=oneRow.loc["g0"]
 
-omegac=oneRow.loc["omegac"]
+
 omegam=oneRow.loc["omegam"]
 omegap=oneRow.loc["omegap"]
-er=oneRow.loc["er"]
+er=oneRow.loc["er"]#magnification
+omegac=g0*er
+# print("er="+str(er))
 lmd=(er**2-1/er**2)/(er**2+1/er**2)*(omegam-omegap)
+# print("lambda="+str(lmd))
+# print("Deltam="+str(omegam-omegap))
 thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 
 
-
-
-
-
-prevtStart=45
-prevtStop=50
-prevPart=9
-
-
-outDirPrefix= "group"+str(group)+"/"
-Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
-inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)+"psiAllpart"+str(prevPart)+".pkl"
-
-with open(inPrevPklFileName,"rb") as fptr:
-    wvPrev=pickle.load(fptr)
-tLoadEnd=datetime.now()
-
+tStart=0
+tStop=5
+tTot=(tStop-tStart)
 
 N1=500
 N2=500
@@ -86,14 +65,9 @@ L2=10
 dx1=2*L1/N1
 dx2=2*L2/N2
 
-currtStart=wvPrev.tStop
-
-dt=wvPrev.dt
-
-currtTotLength=5
-currtStop=currtStart+currtTotLength
-
-M=int(currtTotLength/dt)
+dtEst=0.002
+M=int(tTot/dtEst)
+dt=tTot/M
 
 x1ValsAll=np.array([-L1+dx1*n1 for n1 in range(0,N1)])
 x2ValsAll=np.array([-L2+dx2*n2 for n2 in range(0,N2)])
@@ -119,7 +93,7 @@ def H1Mat(j):
     :return: value of matrix H1 at time step j
     """
     tj = j * dt
-    return -1 / 2 * g0 * np.sqrt(2 * omegam) * np.cos(omegap * (currtStart+ tj + 1 / 2 * dt)) * diagD2
+    return -1 / 2 * g0 * np.sqrt(2 * omegam) * np.cos(omegap * (tj + 1 / 2 * dt)) * diagD2
 
 
 #construct H2
@@ -131,9 +105,9 @@ H2=1/2*omegac**2*diagH2
 #construct H3
 H3=(1/2*lmd*omegam*np.cos(theta)+1/2*Deltam*omegam)*diagS2
 
+
 blockH4=[D2*x1ValsAll[n1]**2 for n1 in range(0,N1)]
 diagH4=sparse.block_diag(blockH4,format="csc",dtype=complex)
-
 
 def H4Mat(j):
     """
@@ -143,7 +117,7 @@ def H4Mat(j):
     """
 
     tj=j*dt
-    return g0 * omegac * np.sqrt(2 * omegam) * np.cos(omegap * (currtStart+ tj + 1 / 2 * dt)) * diagH4
+    return g0 * omegac * np.sqrt(2 * omegam) * np.cos(omegap * (tj + 1 / 2 * dt)) * diagH4
 
 
 
@@ -163,10 +137,11 @@ def H5Mat(j):
     """
     tj=j*dt
 
-    A5j=-1j*g0*omegac*np.sqrt(2/omegam)*np.sin(omegap*(currtStart+ tj+1/2*dt))*diagH2\
-        +1j*1/2*g0*np.sqrt(2/omegam)*np.sin(omegap*(currtStart+ tj+1/2*dt))*IN1N2
+    A5j=-1j*g0*omegac*np.sqrt(2/omegam)*np.sin(omegap*(tj+1/2*dt))*diagH2\
+        +1j*1/2*g0*np.sqrt(2/omegam)*np.sin(omegap*(tj+1/2*dt))*IN1N2
 
     return A5j*1/(2*dx2)*diagH5
+
 
 
 #construct H6
@@ -176,14 +151,16 @@ leftMat=sparse.diags(-2*np.ones(N1),offsets=0,format="csc",dtype=complex)\
     +sparse.diags(np.ones(N1-1),offsets=-1,format="csc",dtype=complex)
 
 
+
+
 H6=-1/(2*dx1**2)*sparse.kron(leftMat,sparse.eye(N2,dtype=complex,format="csc"),format="csc")
+
 
 #construct H7
 
 Q2=sparse.diags(-2*np.ones(N2),offsets=0,format="csc",dtype=complex)\
     +sparse.diags(np.ones(N2-1),offsets=1,format="csc",dtype=complex)\
     +sparse.diags(np.ones(N2-1),offsets=-1,format="csc",dtype=complex)
-
 
 blockH7=[Q2 for n1 in range(0,N1)]
 
@@ -193,6 +170,51 @@ H7=(-Deltam/(2*omegam)+lmd*np.cos(theta)/(2*omegam))*1/(dx2**2)*diagH7
 #construct H8
 antiCommD2P2=D2@P2+P2@D2
 H8=1j*lmd*np.sin(theta)/(4*dx2)*sparse.kron(sparse.eye(N1,dtype=complex,format="csc"),antiCommD2P2)
+
+
+def psi0(n1n2):
+    """
+
+    :param n1n2: [n1,n2], n1, n2 are positions in x1, x2 array
+    :return: initial value of wavefunction with position: [n1,n2, psi]
+    """
+    n1,n2=n1n2
+    x1=x1ValsAll[n1]
+    x2=x2ValsAll[n2]
+    funcVal= np.exp(-1 / 2 * omegac * x1 ** 2) * H(j1H, np.sqrt(omegac)*x1)\
+             * np.exp(-1 / 2 * omegam * x2 ** 2) * H(j2H,np.sqrt(omegam)*x2)
+
+    return [n1,n2,funcVal]
+
+
+n1n2All=[[n1,n2] for n1 in range(0,N1) for n2 in range(0,N2)]
+procNum=48
+
+pool0=Pool(procNum)
+tInitStart=datetime.now()
+ret0=pool0.map(psi0,n1n2All)
+Psi0=np.zeros(N1*N2,dtype=complex)
+for item in ret0:
+    n1,n2,val=item
+    Psi0[n1*N2+n2]=val
+Psi0/=np.linalg.norm(Psi0,ord=2)
+tInitEnd=datetime.now()
+
+print("Initialization of Psi: ",tInitEnd-tInitStart)
+
+
+
+# def evoMat(j):
+#     """
+#
+#     :param j: time step j
+#     :return: (1-1/2 * i*dt *H)/(1+1/2*i*dt*H)
+#     """
+#     HDRj = H0 + H1Mat(j) + H2 + H3 + H4Mat(j) + H5Mat(j) + H6 + H7 + H8
+#
+#     mat=(IN1N2-1/2*1j*dt*HDRj)@inv(IN1N2+1/2*1j*dt*HDRj)
+#
+#     return [j,mat]
 def HMat(j):
     """
 
@@ -201,7 +223,8 @@ def HMat(j):
     """
     HDRj = H0 + H1Mat(j) + H2 + H3 + H4Mat(j) + H5Mat(j) + H6 + H7 + H8
     return [j,HDRj]
-procNum=48
+
+
 tStepsAll=[j for j in range(0,M)]
 tHStart=datetime.now()
 pool0=Pool(procNum)
@@ -211,39 +234,48 @@ tHEnd=datetime.now()
 
 print("Construct All H time: ",tHEnd-tHStart)
 
-wvCurr=solution()
-wvCurr.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
-wvCurr.tStart=currtStart
-wvCurr.tStop=currtStop
-wvCurr.part=wvPrev.part+1
-wvCurr.rowNum=rowNum
-wvCurr.group=group
-wvCurr.dt=dt
-wvCurr.psiAll[0,:]=wvPrev.psiAll[-1,:]
 tEvolutionStart=datetime.now()
+class solution:
+    def __init__(self):
+        self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
+        self.tStart=tStart
+        self.tStop=tStop
+        self.dt=dt
+        self.part=0
+        self.rowNum=rowNum
+        self.group=group
+wavefunctions=solution()
+wavefunctions.psiAll[0,:]=Psi0
+# PsiAll=[copy.deepcopy(Psi0)]
 for j in range(0,M):
+
     if j%500==0:
         print("step "+str(j))
-    PsiCurr=wvCurr.psiAll[j,:]
+    PsiCurr=wavefunctions.psiAll[j,:]
     Htmp=retHAllSorted[j][1]
-    y0 = spsolve(IN1N2 + 1 / 2 * 1j * dt * Htmp, PsiCurr)
-    PsiNext = (IN1N2 - 1 / 2 * 1j * dt * Htmp) @ y0
-    wvCurr.psiAll[j + 1, :] = PsiNext
+    y0=spsolve(IN1N2+1/2*1j*dt*Htmp,PsiCurr)
+    PsiNext=(IN1N2-1/2*1j*dt*Htmp)@y0
+    # PsiAll.append(PsiNext)
+    wavefunctions.psiAll[j+1,:]=PsiNext
+
+
+# outData=np.array(PsiAll).T
+# dtFrm=pd.DataFrame(data=outData)
+# outDirPrefix="./omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)+"theta"+str(theta/np.pi)+"pi"+"/"
+outDirPrefix= "groupNew"+str(group)+"/"
+Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
+
+# dtFrm.to_csv(outDirPrefix+"PsiAll.csv",index=False,header=False)
 
 tEvolutionEnd=datetime.now()
 
 print("evolution time: ",tEvolutionEnd-tEvolutionStart)
 
-outPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(wvCurr.tStart)+"stop"+str(wvCurr.tStop)\
-               +"psiAllpart"+str(wvCurr.part)+".pkl"
-
+outPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(tStart)+"stop"+str(tStop)+"psiAllpart"+str(wavefunctions.part)+".pkl"
 with open(outPklFileName,"wb") as fptr:
-    pickle.dump(wvCurr,fptr,pickle.HIGHEST_PROTOCOL)
-
+    pickle.dump(wavefunctions,fptr,pickle.HIGHEST_PROTOCOL)
 
 ##############memory usage
 import psutil
 process = psutil.Process()
 print("mem total="+str((process.memory_info().rss)/1024**3)+"GB")
-
-# print("last psi is at "+str(wvCurr.tStop))
