@@ -47,8 +47,8 @@ class solution:
 tLoadStart=datetime.now()
 # dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
 part=0
-inDirPrefix="groupNew"+str(group)+"/row"+str(rowNum)+"start"+str(evoStart)+"stop"+str(eVoEnd)+"psiAllpart"+str(part)+".pkl"
-inPklFileName=inDirPrefix+"psiAll.pkl"
+inDirPrefix="./groupNew"+str(group)+"/row"+str(rowNum)+"start"+str(evoStart)+"stop"+str(eVoEnd)+"psiAllpart"+str(part)
+inPklFileName=inDirPrefix+".pkl"
 with open(inPklFileName,"rb") as fptr:
     wavefunctions=pickle.load(fptr)
 tLoadEnd=datetime.now()
@@ -193,7 +193,7 @@ plt.plot(timeStepsAll*dt,NmVals,color="red",label="phonon")
 xTicks=[0,1/4*tTot,2/4*tTot,3/4*tTot,tTot]
 xTicks=[round(val,2) for val in xTicks]
 plt.xticks(xTicks)
-plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H))
+plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H)+", $e^{r}=$"+str(er))
 plt.xlabel("time")
 plt.ylabel("number")
 plt.legend(loc="upper left")
@@ -215,7 +215,7 @@ plt.plot(timeStepsAll*dt,NcVals,color="blue",label="photon")
 xTicks=[0,1/4*tTot,2/4*tTot,3/4*tTot,tTot]
 xTicks=[round(val,2) for val in xTicks]
 plt.xticks(xTicks)
-plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H))
+plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H)+", $e^{r}=$"+str(er))
 plt.xlabel("time")
 plt.ylabel("photon number")
 plt.legend(loc="upper left")
