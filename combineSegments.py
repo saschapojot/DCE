@@ -134,7 +134,7 @@ NcList=[]
 NmList=[]
 procNum=48
 psiFirstLast=[]#initial and final value of wavefunction
-print(pklFileNames)
+# print(pklFileNames)
 for i in range(0,len(pklFileNames)):
     print("load file "+str(i))
     onePklFile=pklFileNames[i]
@@ -190,9 +190,9 @@ for i in range(1,len(NmList)):
     NmCombined+=tmpList[1:]
 # print("len(NmCombined)="+str(len(NmCombined)))
 #outdir
-path0="./group"+str(group)+"/num/both/"
-path1="./group"+str(group)+"/num/photon/"
-path2="./group"+str(group)+"/wv/"
+path0="./groupNew"+str(group)+"/num/both/"
+path1="./groupNew"+str(group)+"/num/photon/"
+path2="./groupNew"+str(group)+"/wv/"
 Path(path0).mkdir(parents=True, exist_ok=True)
 Path(path1).mkdir(parents=True, exist_ok=True)
 Path(path2).mkdir(parents=True, exist_ok=True)
