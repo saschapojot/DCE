@@ -11,12 +11,12 @@ from pathlib import Path
 
 rowNum=0
 
-group=5
+group=1
 
 
 N1=500
 N2=500
-inParamFileName="inParams"+str(group)+".csv"
+inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
 oneRow=dfstr.iloc[rowNum,:]
@@ -25,10 +25,11 @@ oneRow=dfstr.iloc[rowNum,:]
 j1H=int(oneRow.loc["j1H"])
 j2H=int(oneRow.loc["j2H"])
 g0=oneRow.loc["g0"]
-omegac=oneRow.loc["omegac"]
+
 omegam=oneRow.loc["omegam"]
 omegap=oneRow.loc["omegap"]
 er=oneRow.loc["er"]
+omegac=g0*er
 thetaCoef=oneRow.loc["thetaCoef"]
 L1=5
 L2=10
@@ -38,16 +39,16 @@ dtEst=0.002
 tTot=5
 M=int(tTot/dtEst)
 dt=tTot/M
-
+evoStart=0
+eVoEnd=evoStart+tTot
 class solution:
     def __init__(self):
         self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
 tLoadStart=datetime.now()
 # dfstr=pd.read_csv(inFileName+"PsiAll.csv",header=None)
-inDirPrefix="group"+str(group)+"/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
-    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
-    +"thetaCoef"+str(thetaCoef)
-inPklFileName=inDirPrefix+"psiAll.pkl"
+part=0
+inDirPrefix="./groupNew"+str(group)+"/row"+str(rowNum)+"start"+str(evoStart)+"stop"+str(eVoEnd)+"psiAllpart"+str(part)
+inPklFileName=inDirPrefix+".pkl"
 with open(inPklFileName,"rb") as fptr:
     wavefunctions=pickle.load(fptr)
 tLoadEnd=datetime.now()
@@ -192,16 +193,20 @@ plt.plot(timeStepsAll*dt,NmVals,color="red",label="phonon")
 xTicks=[0,1/4*tTot,2/4*tTot,3/4*tTot,tTot]
 xTicks=[round(val,2) for val in xTicks]
 plt.xticks(xTicks)
-plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H))
+plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H)+", $e^{r}=$"+str(er))
 plt.xlabel("time")
 plt.ylabel("number")
 plt.legend(loc="upper left")
 
-outNumFilePrefix="group"+str(group)+"/num/both/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+path0="./groupNew"+str(group)+"/num/both/"
+path1="./groupNew"+str(group)+"/num/photon/"
+path2="./groupNew"+str(group)+"/wv/"
+Path(path0).mkdir(parents=True, exist_ok=True)
+Path(path1).mkdir(parents=True, exist_ok=True)
+Path(path2).mkdir(parents=True, exist_ok=True)
+plt.savefig(path0+"row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
-    +"thetaCoef"+str(thetaCoef)
-Path("group"+str(group)+"/num/both").mkdir(parents=True, exist_ok=True)
-plt.savefig(outNumFilePrefix+"number.png")
+    +"thetaCoef"+str(thetaCoef)+"number.png")
 plt.close()
 
 plt.figure()
@@ -210,15 +215,14 @@ plt.plot(timeStepsAll*dt,NcVals,color="blue",label="photon")
 xTicks=[0,1/4*tTot,2/4*tTot,3/4*tTot,tTot]
 xTicks=[round(val,2) for val in xTicks]
 plt.xticks(xTicks)
-plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H))
+plt.title("$g_{0}=$"+str(g0)+", initial phonon number = "+str(j2H)+", $e^{r}=$"+str(er))
 plt.xlabel("time")
 plt.ylabel("photon number")
 plt.legend(loc="upper left")
-outNumFilePrefix1="group"+str(group)+"/num/photon/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+
+plt.savefig(path1+"row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
     +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
-    +"thetaCoef"+str(thetaCoef)
-Path("group"+str(group)+"/num/photon").mkdir(parents=True, exist_ok=True)
-plt.savefig(outNumFilePrefix1+"photon.png")
+    +"thetaCoef"+str(thetaCoef)+"photon.png")
 plt.close()
 
 
@@ -242,10 +246,7 @@ def psi2Mat(psi):
 #     plt.savefig(inDirPrefix+"j="+str(j)+".png")
 #     plt.close()
 
-outWvPrefix="group"+str(group)+"/wv/row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
-    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
-    +"thetaCoef"+str(thetaCoef)
-Path("group"+str(group)+"/wv").mkdir(parents=True, exist_ok=True)
+
 j2Plot=[0,-1]
 for j in j2Plot:
     mat = np.abs(psi2Mat(wavefunctions.psiAll[j, :]))
@@ -253,5 +254,7 @@ for j in j2Plot:
     plt.imshow(mat)
     plt.title("$t=$"+str((j%(M+1)*dt)))
     plt.colorbar()
-    plt.savefig(outWvPrefix + "tStep" + str(j) + ".png")
+    plt.savefig(path2+"row"+str(rowNum)+"j1H"+str(j1H)+"j2H"+str(j2H)\
+    +"g0"+str(g0)+"omegac"+str(omegac)+"omegam"+str(omegam)+"omegap"+str(omegap)+"er"+str(er)\
+    +"thetaCoef"+str(thetaCoef)+ "tStep" + str(j) + ".png")
     plt.close()
