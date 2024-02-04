@@ -235,6 +235,8 @@ tHEnd=datetime.now()
 print("Construct All H time: ",tHEnd-tHStart)
 
 tEvolutionStart=datetime.now()
+
+
 class solution:
     def __init__(self):
         self.psiAll=np.zeros((M+1,N1*N2),dtype=complex)
@@ -250,7 +252,9 @@ wavefunctions.psiAll[0,:]=Psi0
 for j in range(0,M):
 
     if j%500==0:
-        print("step "+str(j))
+        t500Multiple=datetime.now()
+        print("step "+str(j)," time: ",t500Multiple-tEvolutionStart)
+
     PsiCurr=wavefunctions.psiAll[j,:]
     Htmp=retHAllSorted[j][1]
     y0=spsolve(IN1N2+1/2*1j*dt*Htmp,PsiCurr)
@@ -271,7 +275,7 @@ tEvolutionEnd=datetime.now()
 
 print("evolution time: ",tEvolutionEnd-tEvolutionStart)
 
-outPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(tStart)+"stop"+str(tStop)+"psiAllpart"+str(wavefunctions.part)+".pkl"
+outPklFileName=outDirPrefix+"group"+str(group)+"row"+str(rowNum)+"start"+str(tStart)+"stop"+str(tStop)+"psiAllpart"+str(wavefunctions.part)+".pkl"
 with open(outPklFileName,"wb") as fptr:
     pickle.dump(wavefunctions,fptr,pickle.HIGHEST_PROTOCOL)
 
