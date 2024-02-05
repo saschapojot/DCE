@@ -17,7 +17,7 @@ from mpmath import fac
 #this script uses inParamsNewxxx.csv
 
 rowNum=0
-group=0
+group=1
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
