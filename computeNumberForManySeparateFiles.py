@@ -108,7 +108,7 @@ for rowNum in range(0,len(rowVals)):
     er = oneRow.loc["er"]
     omegac = g0 * er
     thetaCoef = oneRow.loc["thetaCoef"]
-    inDirPrefix = "./groupNew" + str(group) + "/row" + str(rowNum) + "start" + str(evoStart) + "stop" + str(
+    inDirPrefix = "./groupNew" + str(group)+ "/"+"group"+str(group) +"row" + str(rowNum) + "start" + str(evoStart) + "stop" + str(
         eVoEnd) + "psiAllpart" + str(part)
     inPklFileName = inDirPrefix + ".pkl"
     tLoadStart = datetime.now()
