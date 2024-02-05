@@ -97,6 +97,7 @@ Path(path1).mkdir(parents=True, exist_ok=True)
 Path(path2).mkdir(parents=True, exist_ok=True)
 
 for rowNum in range(0,len(rowVals)):
+    print("file "+str(rowNum)+"============================")
     #load parameters in a row
     oneRow = dfstr.iloc[rowNum, :]
     j1H = int(oneRow.loc["j1H"])
