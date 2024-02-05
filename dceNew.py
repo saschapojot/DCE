@@ -17,7 +17,7 @@ from mpmath import fac
 #this script uses inParamsNewxxx.csv
 
 rowNum=0
-group=0
+group=2
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -58,9 +58,9 @@ tStop=5
 tTot=(tStop-tStart)
 
 N1=500
-N2=500
+N2=800
 L1=5
-L2=10
+L2=15
 
 dx1=2*L1/N1
 dx2=2*L2/N2
