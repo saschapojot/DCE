@@ -70,7 +70,7 @@ prevtStop=2
 prevPart=0
 
 
-outDirPrefix= "group"+str(group)+"/"
+outDirPrefix= "groupNew"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)+"psiAllpart"+str(prevPart)+".pkl"
 
