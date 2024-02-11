@@ -277,7 +277,8 @@ tEvolutionEnd=datetime.now()
 
 print("evolution time: ",tEvolutionEnd-tEvolutionStart)
 
-outPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(tStart)+"stop"+str(tStop)+"psiAllpart"+str(wavefunctions.part)+".pkl"
+outPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(tStart)+"stop"+str(tStop)+"psiAllpart"+str(wavefunctions.part)\
+               +"N1"+str(N1)+"N2"+str(N2)+"L1"+str(L1)+"L2"+str(L2)+".pkl"
 with open(outPklFileName,"wb") as fptr:
     pickle.dump(wavefunctions,fptr,pickle.HIGHEST_PROTOCOL)
 
