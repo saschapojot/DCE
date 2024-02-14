@@ -17,13 +17,11 @@ from mpmath import fac
 #this script uses inParamsNewxxx.csv
 
 rowNum=0
-<<<<<<< HEAD
-group=3
-=======
+
 
 group=2
 
->>>>>>> 7575793a247fed143b0258b53e94c1fec2e7370b
+
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -64,15 +62,11 @@ tStop=2
 tTot=(tStop-tStart)
 
 N1=500
-<<<<<<< HEAD
-N2=1024
-L1=5
-L2=20
-=======
+
 N2=2048
 L1=5
 L2=40
->>>>>>> 7575793a247fed143b0258b53e94c1fec2e7370b
+
 
 dx1=2*L1/N1
 dx2=2*L2/N2
