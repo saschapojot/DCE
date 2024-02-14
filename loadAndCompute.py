@@ -17,7 +17,7 @@ import pickle
 #this script loads from  a previous computation, and continues to solve the time-dependent
 #Schrodinger equation
 rowNum=0
-group=0
+group=3
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -50,10 +50,11 @@ def H(n,x):
 
 g0=oneRow.loc["g0"]
 
-omegac=oneRow.loc["omegac"]
+# omegac=oneRow.loc["omegac"]
 omegam=oneRow.loc["omegam"]
 omegap=oneRow.loc["omegap"]
 er=oneRow.loc["er"]
+omegac=g0*er
 lmd=(er**2-1/er**2)/(er**2+1/er**2)*(omegam-omegap)
 thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
@@ -64,12 +65,12 @@ Deltam=omegam-omegap
 
 
 
-prevtStart=45
-prevtStop=50
-prevPart=9
+prevtStart=0
+prevtStop=2
+prevPart=0
 
 
-outDirPrefix= "group"+str(group)+"/"
+outDirPrefix= "groupNew"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)+"psiAllpart"+str(prevPart)+".pkl"
 
@@ -79,9 +80,9 @@ tLoadEnd=datetime.now()
 
 
 N1=500
-N2=500
+N2=1024
 L1=5
-L2=10
+L2=20
 
 dx1=2*L1/N1
 dx2=2*L2/N2
@@ -90,7 +91,7 @@ currtStart=wvPrev.tStop
 
 dt=wvPrev.dt
 
-currtTotLength=5
+currtTotLength=2
 currtStop=currtStart+currtTotLength
 
 M=int(currtTotLength/dt)

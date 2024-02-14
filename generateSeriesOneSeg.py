@@ -8,7 +8,9 @@ import pandas as pd
 dceFileName="dceNew"
 suffix=".py"
 
-group=3
+
+group=4
+
 
 inParamFileName="inParamsNew"+str(group)+".csv"
 dfstr=pd.read_csv(inParamFileName)
@@ -40,9 +42,11 @@ for i in range(0,nRow):
     bashContents.append("#!/bin/bash\n")
     bashContents.append("#SBATCH -n 32\n")
     bashContents.append("#SBATCH -N 1\n")
-    bashContents.append("#SBATCH -t 0-40:00\n")
-    bashContents.append("#SBATCH -p xahctest\n")
-    bashContents.append("#SBATCH --mem=40GB\n")
+
+    bashContents.append("#SBATCH -t 0-10:00\n")
+    bashContents.append("#SBATCH -p CLUSTER\n")
+    bashContents.append("#SBATCH --mem=80GB\n")
+
     bashContents.append("#SBATCH -o outdceNew" + str(i) + ".out\n")
     bashContents.append("#SBATCH -e outdceNew" + str(i) + ".err\n")
     # bashContents.append("cd /home/liuxi/DCE\n")
