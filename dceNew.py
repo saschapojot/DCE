@@ -17,7 +17,7 @@ from mpmath import fac
 #this script uses inParamsNewxxx.csv
 
 rowNum=0
-group=1
+group=3
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -54,17 +54,17 @@ Deltam=omegam-omegap
 
 
 tStart=0
-tStop=5
+tStop=2
 tTot=(tStop-tStart)
 
 N1=500
-N2=500
+N2=1024
 L1=5
-L2=10
+L2=20
 
 dx1=2*L1/N1
 dx2=2*L2/N2
-
+# print(dx2)
 dtEst=0.002
 M=int(tTot/dtEst)
 dt=tTot/M
