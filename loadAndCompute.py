@@ -65,9 +65,9 @@ Deltam=omegam-omegap
 
 
 
-prevtStart=0
-prevtStop=2
-prevPart=0
+prevtStart=2
+prevtStop=4
+prevPart=1
 
 
 outDirPrefix= "groupNew"+str(group)+"/"

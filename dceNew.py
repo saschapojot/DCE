@@ -56,7 +56,7 @@ Deltam=omegam-omegap
 
 
 tStart=0
-tStop=5
+tStop=2
 tTot=(tStop-tStart)
 
 N1=500
