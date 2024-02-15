@@ -93,7 +93,7 @@ currtStart=wvPrev.tStop
 
 dt=wvPrev.dt
 
-currtTotLength=2
+currtTotLength=1
 currtStop=currtStart+currtTotLength
 
 M=int(currtTotLength/dt)
