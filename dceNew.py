@@ -18,7 +18,9 @@ from mpmath import fac
 
 rowNum=0
 
+
 group=2
+
 
 inParamFileName="inParamsNew"+str(group)+".csv"
 
@@ -60,13 +62,15 @@ tStop=2
 tTot=(tStop-tStart)
 
 N1=500
+
 N2=2048
 L1=5
 L2=40
 
+
 dx1=2*L1/N1
 dx2=2*L2/N2
-
+# print(dx2)
 dtEst=0.002
 M=int(tTot/dtEst)
 dt=tTot/M

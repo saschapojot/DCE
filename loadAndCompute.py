@@ -17,7 +17,7 @@ import pickle
 #this script loads from  a previous computation, and continues to solve the time-dependent
 #Schrodinger equation
 rowNum=0
-group=3
+group=4
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -65,24 +65,28 @@ Deltam=omegam-omegap
 
 
 
-prevtStart=2
-prevtStop=4
-prevPart=1
+
+prevtStart=0
+prevtStop=1
+prevPart=0
+N1=500
+N2=2048
+L1=5
+L2=40
 
 
-outDirPrefix= "groupNew"+str(group)+"/"
+outDirPrefix= "./groupNew"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
-inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)+"psiAllpart"+str(prevPart)+".pkl"
+inPrevPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(prevtStart)+"stop"+str(prevtStop)\
+                  +"psiAllpart"+str(prevPart)+"N1"+str(N1)+"N2"+str(N2)+"L1"+str(L1)\
+                  +"L2"+str(L2)+".pkl"
 
 with open(inPrevPklFileName,"rb") as fptr:
     wvPrev=pickle.load(fptr)
 tLoadEnd=datetime.now()
 
 
-N1=500
-N2=1024
-L1=5
-L2=20
+
 
 dx1=2*L1/N1
 dx2=2*L2/N2
@@ -91,7 +95,7 @@ currtStart=wvPrev.tStop
 
 dt=wvPrev.dt
 
-currtTotLength=2
+currtTotLength=1
 currtStop=currtStart+currtTotLength
 
 M=int(currtTotLength/dt)
@@ -236,7 +240,8 @@ tEvolutionEnd=datetime.now()
 print("evolution time: ",tEvolutionEnd-tEvolutionStart)
 
 outPklFileName=outDirPrefix+"row"+str(rowNum)+"start"+str(wvCurr.tStart)+"stop"+str(wvCurr.tStop)\
-               +"psiAllpart"+str(wvCurr.part)+".pkl"
+               +"psiAllpart"+str(wvCurr.part)+"N1"+str(N1)+"N2"+str(N2)+"L1"+str(L1)\
+                  +"L2"+str(L2)+".pkl"
 
 with open(outPklFileName,"wb") as fptr:
     pickle.dump(wvCurr,fptr,pickle.HIGHEST_PROTOCOL)
