@@ -9,7 +9,7 @@ dceFileName="dceNew"
 suffix=".py"
 
 
-group=4
+group=5
 
 
 inParamFileName="inParamsNew"+str(group)+".csv"
@@ -49,8 +49,8 @@ for i in range(0,nRow):
 
     bashContents.append("#SBATCH -o outdceNew" + str(i) + ".out\n")
     bashContents.append("#SBATCH -e outdceNew" + str(i) + ".err\n")
-    # bashContents.append("cd /home/liuxi/DCE\n")
-    command="python dceNew"+str(i)+".py\n"
+    bashContents.append("cd /home/cywanag/liuxi/Documents/pyCode/DCE\n")
+    command="python3 dceNew"+str(i)+".py\n"
     bashContents.append(command)
     bsFileName = "./dceBash/dceNew" + str(i) + ".sh"
     fbsTmp = open(bsFileName, "w+")
