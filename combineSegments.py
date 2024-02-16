@@ -21,7 +21,9 @@ class solution:
         self.group=0
 
 rowNum=0
-group=3
+
+group=4
+
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -42,15 +44,54 @@ lmd=(er**2-1/er**2)/(er**2+1/er**2)*(omegam-omegap)
 thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
-N1=500
-N2=1024
-L1=5
-L2=20
+
+####load data
+N1=0
+N2=0
+L1=0
+L2=0
+pklFileNames = []
+startVals = []
+for file in glob.glob("./groupNew" + str(group) + "/*.pkl"):
+    pklFileNames.append(file)
+    matchStart=re.search(r"start(-?\d+(\.\d+)?)stop",file)
+    if matchStart:
+        startVals.append(matchStart.group(1))
+    matchN1=re.search(r"N1(\d+)N2",file)
+    if matchN1:
+        N1=int(matchN1.group(1))
+    matchN2=re.search(r"N2(\d+)L1",file)
+    if matchN2:
+        N2=int(matchN2.group(1))
+    matchL1=re.search(r"L1(\d+(\.\d+)?)L2",file)
+    if matchL1:
+        L1=float(matchL1.group(1))
+    matchL2=re.search(r"L2(\d+(\.\d+)?)\.pkl",file)
+    if matchL2:
+        L2=float(matchL2.group(1))
+
+
+val0 = (len(pklFileNames) - len(startVals)) ** 2
+if val0 != 0:
+    raise ValueError("unequal length.")
+
 
 dx1=2*L1/N1
 dx2=2*L2/N2
 x1ValsAll=np.array([-L1+dx1*n1 for n1 in range(0,N1)])
 x2ValsAll=np.array([-L2+dx2*n2 for n2 in range(0,N2)])
+
+
+
+# N1=500
+# N2=500
+# L1=5
+# L2=10
+#
+# dx1=2*L1/N1
+# dx2=2*L2/N2
+# x1ValsAll=np.array([-L1+dx1*n1 for n1 in range(0,N1)])
+# x2ValsAll=np.array([-L2+dx2*n2 for n2 in range(0,N2)])
 
 
 
@@ -106,14 +147,16 @@ def avgNm(j):
 
 
 
-####load data
-pklFileNames = []
-startVals = []
-for file in glob.glob("./groupNew" + str(group) + "/*.pkl"):
-    pklFileNames.append(file)
-    matchStart=re.search(r"start(-?\d+(\.\d+)?)stop",file)
-    if matchStart:
-        startVals.append(matchStart.group(1))
+
+# ####load data
+# pklFileNames = []
+# startVals = []
+# for file in glob.glob("./groupNew" + str(group) + "/*.pkl"):
+#     pklFileNames.append(file)
+#     matchStart=re.search(r"start(-?\d+(\.\d+)?)stop",file)
+#     if matchStart:
+#         startVals.append(matchStart.group(1))
+#
 
 # val0 = (len(pklFileNames) - len(startVals)) ** 2
 # if val0 != 0:
