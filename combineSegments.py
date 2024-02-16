@@ -21,7 +21,7 @@ class solution:
         self.group=0
 
 rowNum=0
-group=0
+group=3
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -43,9 +43,9 @@ thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
 N1=500
-N2=500
+N2=1024
 L1=5
-L2=10
+L2=20
 
 dx1=2*L1/N1
 dx2=2*L2/N2
@@ -115,9 +115,9 @@ for file in glob.glob("./groupNew" + str(group) + "/*.pkl"):
     if matchStart:
         startVals.append(matchStart.group(1))
 
-val0 = (len(pklFileNames) - len(startVals)) ** 2
-if val0 != 0:
-    raise ValueError("unequal length.")
+# val0 = (len(pklFileNames) - len(startVals)) ** 2
+# if val0 != 0:
+#     raise ValueError("unequal length.")
 
 
 def str2float(valList):
