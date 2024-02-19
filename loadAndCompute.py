@@ -65,6 +65,7 @@ Deltam=omegam-omegap
 
 
 
+
 prevtStart=0
 prevtStop=1
 prevPart=0
@@ -72,6 +73,7 @@ N1=500
 N2=2048
 L1=5
 L2=40
+
 
 outDirPrefix= "./groupNew"+str(group)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)

@@ -21,7 +21,9 @@ class solution:
         self.group=0
 
 rowNum=0
+
 group=4
+
 inParamFileName="inParamsNew"+str(group)+".csv"
 
 dfstr=pd.read_csv(inParamFileName)
@@ -42,6 +44,7 @@ lmd=(er**2-1/er**2)/(er**2+1/er**2)*(omegam-omegap)
 thetaCoef=oneRow.loc["thetaCoef"]
 theta=np.pi*thetaCoef
 Deltam=omegam-omegap
+
 ####load data
 N1=0
 N2=0
@@ -71,6 +74,7 @@ for file in glob.glob("./groupNew" + str(group) + "/*.pkl"):
 val0 = (len(pklFileNames) - len(startVals)) ** 2
 if val0 != 0:
     raise ValueError("unequal length.")
+
 
 dx1=2*L1/N1
 dx2=2*L2/N2
@@ -143,6 +147,7 @@ def avgNm(j):
 
 
 
+
 # ####load data
 # pklFileNames = []
 # startVals = []
@@ -152,6 +157,7 @@ def avgNm(j):
 #     if matchStart:
 #         startVals.append(matchStart.group(1))
 #
+
 # val0 = (len(pklFileNames) - len(startVals)) ** 2
 # if val0 != 0:
 #     raise ValueError("unequal length.")
