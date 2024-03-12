@@ -257,7 +257,7 @@ wavefunctions.psiAll[0,:]=Psi0
 # PsiAll=[copy.deepcopy(Psi0)]
 for j in range(0,M):
 
-    if j%500==0:
+    if j%10==0:
         t500Multiple=datetime.now()
         print("step "+str(j)," time: ",t500Multiple-tEvolutionStart)
 
